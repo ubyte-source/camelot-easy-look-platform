@@ -1,0 +1,12 @@
+div.connector { width: 100%; padding: 16px 0; }
+
+div.connector article.event { position: relative; background-color: #fff; cursor: pointer; }
+div.connector article.event p.preview { min-height: 64px; padding: 8 0px; border: 1px solid #cecece; }
+
+div.connector article.event p.wrapper.add { width: 100%; margin: 8px 0; border-radius: 2px; }
+div.connector article.event p.wrapper.add button { width: 100%; background-color: #fafafa; padding: 8px 0; border: 1px solid #cecece; text-align: center; cursor: pointer; }
+div.connector article.event p.wrapper.add button:hover { background-color: #f1f1f1; }
+div.connector article.event p.wrapper.add button i { color:#9e9e9e; }
+
+div.connector article.event i.remove { position: absolute; right: 0; top: 0; padding: 8px; color:#9e9e9e; cursor: pointer; }
+div.connector article.event i.remove:hover { color: #666; }
