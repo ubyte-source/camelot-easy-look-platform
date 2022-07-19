@@ -1,24 +1,28 @@
 {
-    "name": "energia-europa/energia-europa-pdf",
-    "type": "project",
-    "description": "Energia Europa pdf",
-    "keywords": ["ubyte", "energia europa", "pdf"],
-    "homepage": "https://source.cloud.google.com/energia-cloud-core/energia-europa-pdf",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Paolo Fabris",
-            "email": "support@ubyte.it",
-            "homepage": "https://www.ubyte.it/",
-            "role": "Developer"
-        },
-        {
-            "name": "Gabriele Masero",
-            "email": "support@ubyte.it",
-            "homepage": "https://www.ubyte.it/",
-            "role": "Developer"
-        }
-    ],
+	"name": "energia-source/camelot-easy-look-platform",
+	"type": "project",
+	"description": "Camelot - Easy Look Platform",
+	"keywords": [
+		"ubyte",
+		"energia europa",
+		"camelot easy look platform"
+	],
+	"homepage": "https://github.com/energia-source/camelot-easy-look-platform",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Paolo Fabris",
+			"email": "support@ubyte.it",
+			"homepage": "https://www.ubyte.it/",
+			"role": "Developer"
+		},
+		{
+			"name": "Gabriele Masero",
+			"email": "support@ubyte.it",
+			"homepage": "https://www.ubyte.it/",
+			"role": "Developer"
+		}
+	],
 	"require": {
 		"php": ">=7.3",
 		"ext-mbstring": "*",
