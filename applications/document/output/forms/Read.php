@@ -37,7 +37,9 @@ class Read extends Project
         $application->getData()->setWorker(function ($post) : array {
             $request_parameters = $this->getRemote()->getParameters();
             $request = Gateway::callAPI($request_parameters[0], 'sso/application/read', $post);
-            return $request->{Output::APIDATA};
+            return property_exists($request, Output::APIDATA)
+                    ? $request->{Output::APIDATA}
+                    : array();
         });
         $this->addRemote($application);
     }

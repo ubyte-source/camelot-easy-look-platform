@@ -27,9 +27,10 @@ class Detail extends Project
 
                 $field_value = $field->getValue();
                 $field_value = Gateway::callAPI('iam', 'sso/application/detail' . chr(47) . $field_value);
-                $application = $field->getCore()->addField('application');
-                $application->setValue($field_value->{Output::APIDATA});
-
+                if (property_exists($field_value, Output::APIDATA)){
+                    $application = $field->getCore()->addField('application');
+                    $application->setValue($field_value->{Output::APIDATA});
+                }
                 return true;
             });
             $id_project_application->setPatterns($id_project_application_pattern);
