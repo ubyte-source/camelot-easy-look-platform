@@ -17,11 +17,11 @@
     window.elements = {};
     window.elements.content = document.createElement('div');
     window.elements.content.id = 'content';
-window.elements.content.className = 'widget-infinite-enable-print';
+    window.elements.content.className = 'widget-infinite-enable-print';
 
     window.elements.main = document.createElement('div');
     window.elements.main.id = 'main';
-window.elements.main.className = 'widget-infinite-enable-print';
+    window.elements.main.className = 'widget-infinite-enable-print';
     window.page.addHTMLElement(window.elements.main);
 
     window.elements.wrapper = document.createElement('div');
@@ -190,6 +190,21 @@ window.elements.main.className = 'widget-infinite-enable-print';
             window.location = '/document/output/upsert';
         });
         window.buttons.push(add);
+
+        let duplicate = new Button();
+        duplicate.addStyle('flat');
+        duplicate.getIcon().set('content_copy');
+        duplicate.setText(window.page.getTranslate('nav.buttons.duplicate'));
+        duplicate.appendAttributes({
+            'data-selected-min': 1,
+            'data-selected-max': 1
+        });
+        duplicate.onClick(function () {
+            window.location = '/document/output/upsert?clone'
+                + String.fromCharCode(61)
+                + window.choosed[0];
+        });
+        window.buttons.push(duplicate);
     }
 
     if (window.page.checkPolicy(window.page.application + '/document/output/action/update')) {
@@ -202,7 +217,9 @@ window.elements.main.className = 'widget-infinite-enable-print';
             'data-selected-max': 1
         });
         edit.onClick(function () {
-            window.location = '/document/output/upsert/' + window.choosed[0];
+            window.location = '/document/output/upsert'
+                + String.fromCharCode(47)
+                + window.choosed[0];
         });
         window.buttons.push(edit);
     }

@@ -9,6 +9,7 @@ use IAM\Request as IAMRequest;
 use IAM\Configuration as IAMConfiguration;
 
 use Knight\armor\Output;
+use Knight\armor\output\Data;
 use Knight\armor\Request;
 
 use KSQL\Initiator as KSQL;
@@ -63,10 +64,19 @@ IAMRequest::setOverload(
     'sso/application/action/read/all'
 );
 
+$remotes_only = Data::only($project->getField('id_project')->getName());
 $remotes = $project->getRemotes();
 foreach ($remotes as $remote) 
     $remote->getData()->get($project_query_select_response, 0, (array)Request::post());
 
+
+if (false === empty($remotes_only)) {
+    $remotes_only_filled = array_fill_keys($remotes_only, null);
+    array_walk($project_query_select_response, function (array &$item) use ($remotes_only_filled) {
+        $item = array_intersect_key($item, $remotes_only_filled);
+    });
+}
+    
 Output::concatenate(Setting::COMPLETE, $project_query_select_response_count === count($project_query_select_response));
 Output::concatenate(Output::APIDATA, $project_query_select_response);
 Output::print(true);

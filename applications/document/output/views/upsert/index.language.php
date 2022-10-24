@@ -25,6 +25,7 @@ namespace language\en\applications\document\output\views\upsert\nav {
 namespace language\en\applications\document\output\views\upsert\button {
     const add = 'Add';
     const save = 'Save';
+    const duplicate = 'Duplicate';
     const loader = 'Saving in progress';
     const share = 'Share';
 }
@@ -72,8 +73,8 @@ namespace language\it\applications\document\output\views\upsert\button {
     const save = 'Salva';
     const loader = 'Salvataggio in corso';
     const share = 'Pubblica';
+    const duplicate = 'Duplica';
 }
-
 
 namespace language\it\applications\document\output\views\upsert\tabs {
     const project = 'Progetto';

@@ -10,8 +10,11 @@ use Knight\armor\Request;
 use Knight\armor\Language;
 use Knight\armor\Navigator;
 
+use Entity\validations\Matrioska as VOska;
+
 use KSQL\Initiator as KSQL;
 use KSQL\Factory;
+use KSQL\Statement;
 
 use applications\document\output\database\Project;
 use applications\document\output\forms\Matrioska;
@@ -23,10 +26,51 @@ use applications\document\output\database\project\Javascript;
 $application_basename = IAMConfiguration::getApplicationBasename();
 if (Sso::youHaveNoPolicies($application_basename . '/document/output/action/update')) Output::print(false);
 
-$id_project = parse_url($_SERVER[Navigator::REQUEST_URI], PHP_URL_PATH);
-$id_project = basename($id_project);
+$uri = parse_url($_SERVER[Navigator::REQUEST_URI], PHP_URL_PATH);
+$uri = explode(chr(47), trim($uri, chr(47)));
+$uri = array_filter($uri, 'strlen');
+$uri = array_values($uri);
+$uri_field = array_slice($uri, 1 + Navigator::getDepth());
 
 $matrioska = new Matrioska();
+
+$database_connection = Factory::connect();
+$database_connection->getInstance()->beginTransaction();
+
+$id_project = array_pop($uri_field);
+
+if (0 !== count($uri_field)) {
+    $matrioska = VOska::findRelated($matrioska, ...$uri_field);
+    $matrioska_query = KSQL::start($database_connection, $matrioska);
+
+    $statement = new Statement($database_connection);
+    $statement_where_field = array_pop($uri_field);
+    $statement_where_field = chr(96) . $statement_where_field . chr(96) . chr(32) . chr(61) . chr(32) . '$0';
+    $statement->append($statement_where_field, false, $id_project);
+
+    $matrioska->setFromAssociative((array)Request::post());
+    $matrioska_fields = $matrioska->getAllFieldsKeys();
+    foreach ($matrioska_fields as $key)
+        $matrioska->getField($key)->setUniqueness()->setRequired(!$matrioska->getField($key)->isDefault());
+
+    if (!!$errors = $matrioska->checkRequired()->getAllFieldsWarning()) {
+        Language::dictionary(__file__);
+        $notice = __namespace__ . '\\' . 'notice';
+        $notice = Language::translate($notice);
+        Output::concatenate('notice', $notice);
+        Output::concatenate('errors', $errors);
+        Output::print(false);
+    }
+
+    $matrioska_query_update = $matrioska_query->update();
+    $matrioska_query_update->setWhereStatement($statement);
+    if (null === $matrioska_query_update->run()) Output::print(false);
+
+    $database_connection->getInstance()->commit();
+
+    Output::print(true);
+}
+
 $matrioska->setFromAssociative((array)Request::post());
 $matrioska->getField('id_project')->setProtected(false)->setRequired(true)->setValue($id_project);
 
@@ -38,9 +82,6 @@ if (!!$errors = $matrioska->checkRequired(true)->getAllFieldsWarning()) {
     Output::concatenate('errors', $errors);
     Output::print(false);
 }
-
-$database_connection = Factory::connect();
-$database_connection->getInstance()->beginTransaction();
 
 $delete = [
     new Dependencies(),

@@ -183,34 +183,33 @@
     window.elements.content.appendChild(widgets.connector.out());
 
     let form_header_name = window.page.getTranslate('tabs.header'),
-        form_header = widgets.form.getRow('header');
-
-    widgets.tabs.addItem(form_header_name, form_header.out(), 'material-icons title').out();
-    window.elements.content.appendChild(form_header.out());
+        form_header = widgets.form.getRow('header').getEncapsulate();
+    widgets.tabs.addItem(form_header_name, form_header, 'material-icons title').out();
+    window.elements.content.appendChild(form_header);
 
     let form_footer_name = window.page.getTranslate('tabs.footer'),
-        form_footer = widgets.form.getRow('footer');
-
-    widgets.tabs.addItem(form_footer_name, form_footer.out(), 'material-icons horizontal_split').out();
-    window.elements.content.appendChild(form_footer.out());
+        form_footer = widgets.form.getRow('footer').getEncapsulate();
+    widgets.tabs.addItem(form_footer_name, form_footer, 'material-icons horizontal_split').out();
+    window.elements.content.appendChild(form_footer);
 
     let form_editor_css = widgets.form.findContainer('project_cascade_style_sheet'),
         form_editor_css_name = window.page.getTranslate('tabs.' + form_editor_css.getMatrixName());
-
-    widgets.tabs.addItem(form_editor_css_name, form_editor_css.out(), 'material-icons format_paint').out();
-    window.elements.content.appendChild(form_editor_css.out());
+    widgets.tabs.addItem(form_editor_css_name, form_editor_css.getRow().getEncapsulate(), 'material-icons format_paint').out();
+    window.elements.content.appendChild(form_editor_css.getRow().getEncapsulate());
 
     let form_editor_js = widgets.form.findContainer('project_javascript'),
         form_editor_js_name = window.page.getTranslate('tabs.' + form_editor_js.getMatrixName());
-
-    widgets.tabs.addItem(form_editor_js_name, form_editor_js.out(), 'material-icons code').out();
-    window.elements.content.appendChild(form_editor_js.out());
+    widgets.tabs.addItem(form_editor_js_name, form_editor_js.getRow().getEncapsulate(), 'material-icons code').out();
+    window.elements.content.appendChild(form_editor_js.getRow().getEncapsulate());
 
     let buttons_form = document.createElement('div');
     buttons_form.className = 'buttons-form';
     window.elements.content.appendChild(buttons_form);
 
-    let submit = new Button(), icon = window.reference.length === 0 ? 'add' : 'save';
+    let submit = new Button(),
+        icon = window.reference.length === 0
+            ? 'add'
+            : 'save';
 
     submit.getIcon().set(icon);
     submit.setText(window.reference.length === 0 ? window.page.getTranslate('button.add') : window.page.getTranslate('button.save'));
@@ -229,7 +228,6 @@
 
         form_editor.getPlugin().reset();
         widgets.form.set('project_hyper_text_markup_language', edited.reverse());
-
         widgets.form.request(function () {
             submit.getLoader().remove();
         });
@@ -237,18 +235,35 @@
 
     buttons_form.appendChild(submit.out());
 
+    let clone = Page.getUrlParameter('clone');
+    if (typeof clone !== 'undefined') window.reference.push(clone);
+
     if (window.reference.length === 0) return;
 
-    let update_api = '/api/document/output/update'
-        + String.fromCharCode(47)
-        + encodeURIComponent(window.reference[0])
-        + String.fromCharCode(63)
-        + 'timestamp'
-        + String.fromCharCode(61)
-        + Date.now();
-    widgets.form.setRequestUrl(update_api);
+    if (typeof clone === 'undefined') {
+        let update_api = '/api/document/output/update'
+            + String.fromCharCode(47)
+            + encodeURIComponent(window.reference[0])
+            + String.fromCharCode(63)
+            + 'timestamp'
+            + String.fromCharCode(61)
+            + Date.now();
+        widgets.form.setRequestUrl(update_api);
+        widgets.form.getManager().show();
 
-    widgets.form.getManager().show();
+        let duplicate = new Button();
+
+        duplicate.addStyle('flat green');
+        duplicate.getIcon().set('content_copy');
+        duplicate.setText(window.page.getTranslate('button.duplicate'));
+        duplicate.onClick(function () {
+            window.location = '/document/output/upsert?clone'
+                + String.fromCharCode(61)
+                + window.reference[0];
+        });
+
+        buttons_form.insertBefore(duplicate.out(), submit.out());
+    }
 
     let xhr = new WXmlHttpRequest(),
         api = '/api/document/output/detail'

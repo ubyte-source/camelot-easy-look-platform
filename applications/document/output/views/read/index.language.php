@@ -25,6 +25,7 @@ namespace language\en\applications\document\output\views\read\nav\buttons {
     const add = 'add';
     const edit = 'edit';
     const delete = 'delete';
+    const duplicate = 'duplicate';
     const select = 'keep selection';
     const show_settings = 'show settings';
     const hide_settings = 'hide settings';
@@ -71,6 +72,7 @@ namespace language\it\applications\document\output\views\read\nav\buttons {
     const add = 'aggiungi';
     const edit = 'modifica';
     const delete = 'elimina';
+    const duplicate = 'duplica';
     const select = 'copia selezione';
     const show_settings = 'mostra impostazioni';
     const hide_settings = 'nascondi impostazioni';
