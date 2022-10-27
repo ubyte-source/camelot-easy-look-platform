@@ -18,22 +18,24 @@ class Detail extends Project
 	{
         parent::initialize();
 
-        if (false === Sso::youHaveNoPolicies('sso/application/action/detail')) {
-            $id_project_application = $this->getField('id_project_application');
-            $id_project_application_pattern = Validation::factory('ShowString');
-            $id_project_application_pattern->setClosureMagic(function (Field $field) {
-                $field_readmode = $field->getReadMode();
-                if (false === $field_readmode) return true;
+        IAMRequest::setOverload(
+            'sso/application/action/detail'
+        );
 
-                $field_value = $field->getValue();
-                $field_value = Gateway::callAPI('iam', 'sso/application/detail' . chr(47) . $field_value);
-                if (property_exists($field_value, Output::APIDATA)){
-                    $application = $field->getCore()->addField('application');
-                    $application->setValue($field_value->{Output::APIDATA});
-                }
-                return true;
-            });
-            $id_project_application->setPatterns($id_project_application_pattern);
-        }
+        $id_project_application = $this->getField('id_project_application');
+        $id_project_application_pattern = Validation::factory('ShowString');
+        $id_project_application_pattern->setClosureMagic(function (Field $field) {
+            $field_readmode = $field->getReadMode();
+            if (false === $field_readmode) return true;
+
+            $field_value = $field->getValue();
+            $field_value = Gateway::callAPI('iam', 'sso/application/detail' . chr(47) . $field_value);
+            if (property_exists($field_value, Output::APIDATA)){
+                $application = $field->getCore()->addField('application');
+                $application->setValue($field_value->{Output::APIDATA});
+            }
+            return true;
+        });
+        $id_project_application->setPatterns($id_project_application_pattern);
     }
 }
