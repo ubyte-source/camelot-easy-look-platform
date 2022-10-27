@@ -2,7 +2,7 @@
 
 namespace applications\document\output\forms;
 
-use IAM\Sso;
+use IAM\Request;
 use IAM\Gateway;
 
 use Knight\armor\Output;
