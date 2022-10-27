@@ -18,7 +18,7 @@ class Detail extends Project
 	{
         parent::initialize();
 
-        IAMRequest::setOverload(
+        Request::setOverload(
             'sso/application/action/detail'
         );
 
