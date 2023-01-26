@@ -25,6 +25,15 @@ $setting = new Setting();
 $setting->setFromAssociative((array)Request::post());
 $setting->getField('id_user')->setProtected(false)->setRequired(true)->setValue(Sso::getWhoamiKey());
 
+if (!!$errors = $setting->checkRequired(true)->getAllFieldsWarning()) {
+    Language::dictionary(__file__);
+    $notice = __namespace__ . '\\' . 'notice';
+    $notice = Language::translate($notice);
+    Output::concatenate('notice', $notice);
+    Output::concatenate('errors', $errors);
+    Output::print(false);
+}
+
 $widget = $setting->getField('widget')->getValue();
 $widget = strtolower($widget);
 $widget = ucfirst($widget);
@@ -45,15 +54,7 @@ $setting_value_valid = array_filter($setting_value->getValue(), function (Entity
 });
 $setting_value_valid = array_values($setting_value_valid);
 $setting_value->setValue($setting_value_valid, Field::OVERRIDE);
-
-if (!!$errors = $setting->checkRequired(true)->getAllFieldsWarning()) {
-    Language::dictionary(__file__);
-    $notice = __namespace__ . '\\' . 'notice';
-    $notice = Language::translate($notice);
-    Output::concatenate('notice', $notice);
-    Output::concatenate('errors', $errors);
-    Output::print(false);
-}
+if (!!$setting->checkRequired(true)->getAllFieldsWarning()) Output::print(false);
 
 $database_connection = Factory::connect();
 $database_connection->getInstance()->beginTransaction();
